@@ -2,8 +2,8 @@
 // Created by predrag on 3.3.22..
 //
 
-#ifndef CGRAPHICS_DATASTRUCTS_H
-#define CGRAPHICS_DATASTRUCTS_H
+#ifndef FORESTTRAILGL_DATASTRUCTS_H
+#define FORESTTRAILGL_DATASTRUCTS_H
 #include <string>
 #include <glm/glm.hpp>
 #include "Camera.h"
@@ -24,22 +24,27 @@ struct Texture {
 
 struct ProgramState{
     bool ImguiEnable= false;
-    void LoadFromDisk(std::string path);
-    Camera camera;
-    glm::vec3 lightColor;
-    glm::vec3 lightColor1;
+    bool enableAntialiasing = true;
+    bool isDay = true;
+    bool skyBoxChange = false;
     bool EnableMouseMovement = true;
+    unsigned SCR_WIDTH = 800;
+    unsigned SCR_HEIGHT = 600;
+    glm::vec3 lightColor[3];
+    glm::vec3 lightPosition[3];
     float linear = 0.7;
     float quadratic = 0.032;
-    bool enableAntialiasing = false;
+    float terrainSize;
+    float waterSize;
+    float skyboxOpacity=0;
+    int lightIndex = 0;
+    bool shadows = false;
+    Camera camera = Camera(glm::vec3(0.0f, 4.0f, 35.5f));
 
-    ProgramState()
-            :camera(glm::vec3(0.0f,4.0f,35.5f)),lightColor(glm::vec3(1.0f,1.0f,1.0f))
-            ,lightColor1(glm::vec3(1.0f,1.0f,1.0f)){}
 
 };
 
 
 
 
-#endif //CGRAPHICS_DATASTRUCTS_H
+#endif //FORESTTRAILGL_DATASTRUCTS_H

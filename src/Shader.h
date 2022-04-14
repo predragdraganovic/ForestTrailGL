@@ -2,8 +2,8 @@
 // Created by predrag on 18.2.22..
 //
 
-#ifndef CGRAPHICS_SHADER_H
-#define CGRAPHICS_SHADER_H
+#ifndef FORESTTRAILGL_SHADER_H
+#define FORESTTRAILGL_SHADER_H
 #include <glm/glm.hpp>
 #include "glad/glad.h"
 #include <fstream>
@@ -15,10 +15,9 @@ class Shader {
 public:
 
     unsigned id;
-
     unsigned int getId() const;
 
-    Shader(const char* vertexPath, const char* fragmentPath);
+    Shader(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr);
     void use();
     void setBool(const std::string &name, bool value) const;
     void setInt(const std::string &name, int value) const;
@@ -28,4 +27,4 @@ public:
 };
 
 
-#endif //CGRAPHICS_SHADER_H
+#endif //FORESTTRAILGL_SHADER_H

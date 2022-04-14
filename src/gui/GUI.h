@@ -2,8 +2,8 @@
 // Created by predrag on 24.3.22..
 //
 
-#ifndef CGRAPHICS_GUI_H
-#define CGRAPHICS_GUI_H
+#ifndef FORESTTRAILGL_GUI_H
+#define FORESTTRAILGL_GUI_H
 #include "DataStructs.h"
 #include <iostream>
 #include <filesystem>
@@ -29,14 +29,19 @@ public:
            <<ps.camera.Front.z<<'\n'
            <<ps.camera.Pitch<<'\n'
            <<ps.camera.Yaw<<'\n'
-           <<ps.lightColor.r<<'\n'
-           <<ps.lightColor.g<<'\n'
-           <<ps.lightColor.b<<'\n'
-           <<ps.lightColor1.r<<'\n'
-           <<ps.lightColor1.g<<'\n'
-           <<ps.lightColor1.b<<'\n'
+           <<ps.lightColor[0].r<<'\n'
+           <<ps.lightColor[0].g<<'\n'
+           <<ps.lightColor[0].b<<'\n'
+           <<ps.lightColor[1].r<<'\n'
+           <<ps.lightColor[1].g<<'\n'
+           <<ps.lightColor[1].b<<'\n'
            <<ps.linear<<'\n'
-           <<ps.quadratic;
+           <<ps.quadratic << '\n'
+           <<ps.shadows << '\n'
+           <<ps.lightIndex << '\n'
+           <<ps.isDay << '\n'
+           <<ps.enableAntialiasing << '\n'
+           <<ps.skyboxOpacity;
     };
 
     void loadFromDisk() {
@@ -51,19 +56,22 @@ public:
              >>ps.camera.Front.z
              >>ps.camera.Pitch
              >>ps.camera.Yaw
-             >>ps.lightColor.r
-             >>ps.lightColor.g
-             >>ps.lightColor.b
-             >>ps.lightColor1.r
-             >>ps.lightColor1.g
-             >>ps.lightColor1.b
+             >>ps.lightColor[0].r
+             >>ps.lightColor[0].g
+             >>ps.lightColor[0].b
+             >>ps.lightColor[1].r
+             >>ps.lightColor[1].g
+             >>ps.lightColor[1].b
              >>ps.linear
-             >>ps.quadratic;
-
+             >>ps.quadratic
+             >>ps.shadows
+             >>ps.lightIndex
+             >>ps.isDay
+             >>ps.enableAntialiasing
+             >>ps.skyboxOpacity;
        }
     };
     void initImGui(GLFWwindow* window){
-
         loadFromDisk();
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -102,9 +110,9 @@ public:
             float pos_y = display_height*0.7;
 
             ImGui::SetNextWindowPos(ImVec2(pos_x,pos_y),ImGuiCond_FirstUseEver);
-            ImGui::Begin("CGraphics");
-            ImGui::ColorEdit3("Bulb color",(float*)&ps.lightColor);
-            ImGui::ColorEdit3("Bulb color1",(float*)&ps.lightColor1);
+            ImGui::Begin("ForestTrailGL");
+            ImGui::ColorEdit3("Bulb color",(float*)&ps.lightColor[0]);
+            ImGui::ColorEdit3("Bulb color1",(float*)&ps.lightColor[1]);
 
             float& linear = ps.linear;
             float& quadratic = ps.quadratic;
@@ -133,10 +141,28 @@ public:
 
             ImGui::Checkbox("Enable Antialiasing",&ps.enableAntialiasing);
             if(ps.enableAntialiasing){
-                glEnable(GL_MULTISAMPLE);
+
+                ps.enableAntialiasing = true;
             }else{
-                glDisable(GL_MULTISAMPLE);
+
+                ps.enableAntialiasing = false;
             }
+
+            ImGui::Checkbox("Enable Shadows", &ps.shadows);
+            if(ps.shadows){
+                ps.shadows = true;
+            }
+            else{
+                ps.shadows = false;
+            }
+
+            if(ps.shadows){
+                if(ImGui::RadioButton("Lamp 1", ps.lightIndex == 0))
+                    ps.lightIndex = 0;
+                else if(ImGui::RadioButton("Lamp 2", ps.lightIndex == 1))
+                    ps.lightIndex = 1;
+            }
+
             ImGui::End();
         }
 
@@ -154,7 +180,7 @@ public:
             ImGui::Text("Camera pitch: %f",c.Pitch);
             ImGui::Text("Camera yaw: %f",c.Yaw);
             ImGui::Text("Camera front: (%f, %f, %f)",c.Front.x,c.Front.y,c.Front.z);
-            ImGui::Checkbox("Enable camera movement on mouse",&ps.EnableMouseMovement);
+            //ImGui::Checkbox("Enable camera movement on mouse",&ps.EnableMouseMovement);
             ImGui::End();
         }
         ImGui::Render();
@@ -173,5 +199,4 @@ private:
 
 };
 
-
-#endif //CGRAPHICS_GUI_H
+#endif //FORESTTRAILGL_GUI_H
